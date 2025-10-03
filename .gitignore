@@ -94,3 +94,5 @@ Build/Android/res/*/*
 .vsconfig
 .idea
 *.user
+EGG_GameJam/Binaries
+EGG_GameJam/Intermediate
