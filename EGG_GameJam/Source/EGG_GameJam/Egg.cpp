@@ -19,6 +19,7 @@ float AEgg::EatEgg()
 	TemperatureDistance = FMath::Clamp( TemperatureDistance ,0, PerfectEatingTemperatureRange );
 	TemperatureDistance /= PerfectEatingTemperatureRange;
 	TemperatureDistance = 1 - TemperatureDistance;
+	TemperatureDistance = TemperatureDistance * 0.6f + 0.4f;
 
 	float CookDistance = abs( PerfectCookTimeSeconds - CurrentCookTime );
 	CookDistance = FMath::Clamp( CookDistance, 0, PerfectCookTimeSecondsRange );
