@@ -96,3 +96,6 @@ Build/Android/res/*/*
 *.user
 EGG_GameJam/Binaries
 EGG_GameJam/Intermediate
+EGG_GameJam/Saved/Logs
+EGG_GameJam/Saved/Config/WindowsEditor/EditorPerProjectUserSettings.ini
+EGG_GameJam/Saved/SourceControl/UncontrolledChangelists.json
