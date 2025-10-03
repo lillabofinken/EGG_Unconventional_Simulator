@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\EGG_GameJam.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\EGG_GameJam.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\EGG_GameJamEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\EGG_GameJam">
+      <UniqueIdentifier>{61D7D636-FAA7-3ED2-920F-42397C376AFA}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\EGG_GameJam\EGG_GameJam.Build.cs">
+      <Filter>Source\EGG_GameJam</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\EGG_GameJam\EGG_GameJam.cpp">
+      <Filter>Source\EGG_GameJam</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\EGG_GameJam\EGG_GameJam.h">
+      <Filter>Source\EGG_GameJam</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
