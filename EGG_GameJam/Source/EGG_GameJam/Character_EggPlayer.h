@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Character_EggPlayer.generated.h"
 
 UCLASS()
@@ -38,6 +39,22 @@ public:
 	class UInputAction* InteractAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* ChangeMoveAxisAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
+	float CameraPanStrength = 10.3f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
+	float CameraPanSmoothing = 5.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
+    float EdgeThreshold = 0.35f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
+    float LookAtStrength = 0.5f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
+    float LookAtSmoothness = 4.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
+	float MaxCameraYaw = 15.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
+	float MaxCameraPitch = 8.0f;
+
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> HandBP;
@@ -45,9 +62,13 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	class AActor* HandActor;
 	
-	float MoveSpeed;
+	UPROPERTY(BlueprintReadOnly)
+	USpringArmComponent* CameraBoom;
+
 	UPROPERTY(BlueprintReadOnly)
 	bool bInteract;
 	UPROPERTY(BlueprintReadOnly)
 	bool bDepthMode;
+	
+	float MoveSpeed;
 };

@@ -3,6 +3,9 @@
 
 #include "Character_EggPlayer.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+
 class UEnhancedInputLocalPlayerSubsystem;
 
 ACharacter_EggPlayer::ACharacter_EggPlayer():
@@ -48,12 +51,59 @@ void ACharacter_EggPlayer::BeginPlay()
 		);
 		HandActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("HandSocket"));
 	}
+	
+	if (!CameraBoom)
+	{
+		CameraBoom = FindComponentByClass<USpringArmComponent>();
+	}
 }
 
 void ACharacter_EggPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	if (!HandActor || !CameraBoom)
+		return;
+	
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC)
+		return;
+	
+	FVector2D ScreenLocation;
+	if (!UGameplayStatics::ProjectWorldToScreen(PC, HandActor->GetActorLocation(), ScreenLocation))
+		return;
+	
+	int32 ViewX, ViewY;
+	PC->GetViewportSize(ViewX, ViewY);
+	FVector2D ScreenCenter(ViewX * 0.5f, ViewY * 0.5f);
+	FVector2D FromCenter = (ScreenLocation - ScreenCenter) / FVector2D(ViewX, ViewY);
+	
+	float Distance = FromCenter.Size();
+	if (Distance > EdgeThreshold)
+	{
+		FVector LookDir = (HandActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		FRotator TargetRot = UKismetMathLibrary::MakeRotFromX(LookDir);
+		FRotator OffsetRot = TargetRot - GetActorRotation();
+		
+		// Clamp rot
+		OffsetRot.Yaw = FMath::Clamp(OffsetRot.Yaw, -MaxCameraYaw, MaxCameraYaw);
+		OffsetRot.Pitch = FMath::Clamp(OffsetRot.Pitch, -MaxCameraPitch, MaxCameraPitch);
+		OffsetRot.Roll = 0.f;
+		
+		float EdgeFactor = FMath::Clamp((Distance - EdgeThreshold) / (0.5f - EdgeThreshold), 0.f, 1.f);
+		float DynamicSmoothness = FMath::Lerp(LookAtSmoothness, LookAtSmoothness * 4.f, EdgeFactor);
+		FRotator NewRot = FMath::RInterpTo(CameraBoom->GetRelativeRotation(), OffsetRot, DeltaTime, DynamicSmoothness);
+
+		CameraBoom->SetRelativeRotation(NewRot);
+	}
+	else
+	{
+		// Return to center
+		FRotator ResetRot = FMath::RInterpTo(CameraBoom->GetRelativeRotation(), FRotator::ZeroRotator, DeltaTime, LookAtSmoothness);
+		CameraBoom->SetRelativeRotation(ResetRot);
+	}
 }
+
 
 void ACharacter_EggPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
