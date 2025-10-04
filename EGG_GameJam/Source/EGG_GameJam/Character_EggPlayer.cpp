@@ -142,26 +142,30 @@ void ACharacter_EggPlayer::Move(const FInputActionValue& Value)
 	FVector2D Input = Value.Get<FVector2D>();
 	if (HandActor)
 	{
-	// GEngine->AddOnScreenDebugMessage(10, 0.0f, FColor::Green, FString::Printf(
-	// 	TEXT("Look Input: X=%f, Y=%f"), Input.X, Input.Y));
-		FVector CurrentLocation = HandActor->GetActorLocation();
-		FVector NewLocation = CurrentLocation;
+		FVector LocalInput = FVector::ZeroVector;
 
 		if (!bDepthMode)
 		{
-			NewLocation.X += Input.Y * MoveSpeed;
-			NewLocation.Y += Input.X * MoveSpeed;
+			LocalInput.X = Input.Y * MoveSpeed;
+			LocalInput.Y = Input.X * MoveSpeed;
 		}
 		else
 		{
-			NewLocation.Z -= Input.Y * MoveSpeed;
-			NewLocation.Y += Input.X * MoveSpeed;
+			LocalInput.Z = -Input.Y * MoveSpeed;
+			LocalInput.Y = Input.X * MoveSpeed;
 		}
 
-		HandActor->SetActorLocation(NewLocation);
+		FTransform ParentTransform = HandActor->GetAttachParentActor()
+	? HandActor->GetAttachParentActor()->GetActorTransform()
+	: FTransform::Identity;
 
-		GEngine->AddOnScreenDebugMessage(10, 0.0f, FColor::Green, FString::Printf(
-	TEXT("New Location: X=%f, Y=%f"), NewLocation.X, NewLocation.Y));
+		FVector WorldOffset = ParentTransform.TransformVector(LocalInput);
+
+		FVector NewWorldLocation = HandActor->GetActorLocation() + WorldOffset;
+		HandActor->SetActorLocation(NewWorldLocation);
+
+		GEngine->AddOnScreenDebugMessage(10, 0.0f, FColor::Green,
+				FString::Printf(TEXT("Local Move: X=%.2f, Y=%.2f, Z=%.2f"), LocalInput.X, LocalInput.Y, LocalInput.Z));
 	}
 }
 
