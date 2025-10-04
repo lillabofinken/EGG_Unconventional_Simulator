@@ -162,7 +162,7 @@ void ACharacter_EggPlayer::Move(const FInputActionValue& Value)
 		}
 		else
 		{
-			LocalInput.Z = -Input.Y * MoveSpeed;
+			LocalInput.Z = Input.Y * MoveSpeed;
 			LocalInput.Y = Input.X * MoveSpeed;
 		}
 
