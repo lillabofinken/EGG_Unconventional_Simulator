@@ -155,7 +155,7 @@ void ACharacter_EggPlayer::Move(const FInputActionValue& Value)
 	{
 		FVector LocalInput = FVector::ZeroVector;
 
-		if (!bDepthMode)
+		if (bDepthMode)
 		{
 			LocalInput.X = Input.Y * MoveSpeed;
 			LocalInput.Y = Input.X * MoveSpeed;
