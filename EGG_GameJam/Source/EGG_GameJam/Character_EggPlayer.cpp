@@ -80,6 +80,9 @@ void ACharacter_EggPlayer::Tick(float DeltaTime)
 	PC->GetViewportSize(ViewX, ViewY);
 	FVector2D ScreenCenter(ViewX * 0.5f, ViewY * 0.5f);
 	FVector2D FromCenter = (ScreenLocation - ScreenCenter) / FVector2D(ViewX, ViewY);
+
+	GEngine->AddOnScreenDebugMessage(10, 0.0f, FColor::Green, FString::Printf(
+	TEXT("Fron Center: X=%f, Y=%f"), FromCenter.X, FromCenter.Y));
 	
 	float Distance = FromCenter.Size();
 	if (Distance > EdgeThreshold)
@@ -102,7 +105,8 @@ void ACharacter_EggPlayer::Tick(float DeltaTime)
 	else
 	{
 		// Return to center
-		FRotator ResetRot = FMath::RInterpTo(CameraBoom->GetRelativeRotation(), FRotator::ZeroRotator, DeltaTime, LookAtSmoothness);
+		FRotator ResetRot = FMath::RInterpTo(CameraBoom->GetRelativeRotation(),
+			FRotator::ZeroRotator, DeltaTime, LookAtSmoothness);
 		CameraBoom->SetRelativeRotation(ResetRot);
 	}
 }
