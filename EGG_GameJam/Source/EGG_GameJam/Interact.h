@@ -23,5 +23,5 @@ class EGG_GAMEJAM_API IInteract
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "MyInterface" )
-	void Interact( FVector2D _input );
+	bool Interact( FVector2D _input, FVector _pos );
 };

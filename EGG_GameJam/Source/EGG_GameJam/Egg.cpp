@@ -35,6 +35,13 @@ void AEgg::Boiling_Implementation( bool _enter )
 	IsBoiling = _enter;
 }
 
+bool AEgg::Interact_Implementation( FVector2D _input, FVector _pos )
+{
+	SimulationCounter = 5;
+	SetActorLocation( _pos );
+	return false;
+}
+
 // Called when the game starts or when spawned
 void AEgg::BeginPlay()
 {
@@ -49,6 +56,15 @@ void AEgg::Tick(float DeltaTime)
 
 	EggBoilCalculation( DeltaTime );
 	DrawDebug();
+
+	if( SimulationCounter == 0 )
+		FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics( true );
+	else if( SimulationCounter > 0 )
+		FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics( false );
+		
+
+	if( SimulationCounter > 0 )
+		SimulationCounter--;
 }
 
 void AEgg::EggBoilCalculation( const float _deltaTime )

@@ -42,11 +42,11 @@ void AFishingRod::Tick(float DeltaTime)
 		return;
 }
 
-void AFishingRod::Interact_Implementation( FVector2D _input )
+bool AFishingRod::Interact_Implementation( FVector2D _input, FVector _pos )
 {
 	RodDirection += _input * RodMoveSpeed;
 	RodDirection.Normalize();
-	IInteract::Interact_Implementation( _input );
+	return true;
 }
 
 void AFishingRod::ReelIn( FVector2D _input )
@@ -107,9 +107,6 @@ void AFishingRod::ReelIn( FVector2D _input )
 
 		inputIndex = currentInputIndex;
 	}
-		
-	
-	IInteract::Interact_Implementation( _input );
 }
 
 AFishingRod* AFishingRod::GetFishingRod()

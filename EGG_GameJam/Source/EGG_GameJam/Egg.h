@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "IBoil.h"
+#include "Interact.h"
 
 #include "Egg.generated.h"
 
 UCLASS()
-class EGG_GAMEJAM_API AEgg : public AActor, public IIBoil
+class EGG_GAMEJAM_API AEgg : public AActor, public IIBoil, public IInteract
 {
 	GENERATED_BODY()
 	
@@ -48,6 +49,7 @@ public:
 	
 	float EatEgg();
 	virtual void Boiling_Implementation( bool _enter ) override;
+	virtual bool Interact_Implementation( FVector2D _input,  FVector _pos ) override;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -56,6 +58,8 @@ protected:
 	float CurrentCookTime = 0;
 	float CurrentTemperature = 20;
 	bool IsBoiling = false;
+
+	int SimulationCounter = -1;
 
 public:	
 	// Called every frame

@@ -61,7 +61,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void Interact_Implementation( FVector2D _input ) override;
+	virtual bool Interact_Implementation( FVector2D _input, FVector _pos ) override;
 
 private:
 	int inputIndex = -1;

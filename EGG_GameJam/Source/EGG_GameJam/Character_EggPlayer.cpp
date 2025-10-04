@@ -134,8 +134,8 @@ void ACharacter_EggPlayer::Move(const FInputActionValue& Value)
 		auto HitActor = InteractionTrace();
 		if( HitActor )
 		{
-			IInteract::Execute_Interact( HitActor, Value.Get<FVector2D>() );
-			return;
+			if( IInteract::Execute_Interact( HitActor, Value.Get<FVector2D>(), HandActor->GetActorLocation() - HandActor->GetActorUpVector() * 10 ) )
+				return;
 		}
 	}
 	
