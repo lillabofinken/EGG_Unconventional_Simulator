@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interact.h"
+
 #include "FishingRod.generated.h"
 
 UCLASS()
-class EGG_GAMEJAM_API AFishingRod : public AActor
+class EGG_GAMEJAM_API AFishingRod : public AActor, public IInteract
 {
 	GENERATED_BODY()
 	
@@ -15,12 +17,46 @@ public:
 	// Sets default values for this actor's properties
 	AFishingRod();
 
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Rod" )
+	bool bDebugPrint = false;
+	
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Rod" )
+	float ReelingFailPenalty = 2.0f;
+	
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Rod" )
+	float ReelSpeedDecrease = 1.0f;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Rod" )
+	float ReelingSpeedIncrease = 0.1f;
+
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Rod" )
+	float ReelIncreaseAmount = 0.1f;
+	
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Rod" )
+	float ReelingSpeedCurve = 2.0f;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	float PenaltyTimer = 0.0f;
+
+	UPROPERTY( BlueprintReadOnly )
+	float ReelingAmount = 0.0;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void Interact_Implementation( FVector2D _input ) override;
+
+private:
+	int inputIndex = -1;
+
+
+
+public:
+	static AFishingRod* GetFishingRod();
+private:
+	inline static AFishingRod* FishingRod = nullptr;
 };
