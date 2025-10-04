@@ -97,7 +97,7 @@ void ACharacter_EggPlayer::Tick(float DeltaTime)
 		LocalTargetRot.Pitch = FMath::Clamp(LocalTargetRot.Pitch, -MaxCameraPitch, MaxCameraPitch);
 		LocalTargetRot.Roll = 0.f;
 
-		float EdgeFactor = FMath::Clamp((Distance - EdgeThreshold) / (0.5f - EdgeThreshold), 0.f, 1.f);
+		float EdgeFactor = FMath::Clamp((Distance - EdgeThreshold) / (0.5f - EdgeThreshold), -1.f, 1.f);
 		float DynamicSmoothness = FMath::Lerp(LookAtSmoothness, LookAtSmoothness * 4.f, EdgeFactor);
 
 		FRotator NewRot = FMath::RInterpTo(
