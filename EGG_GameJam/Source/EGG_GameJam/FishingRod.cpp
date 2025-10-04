@@ -29,6 +29,8 @@ void AFishingRod::Tick(float DeltaTime)
 		GEngine->AddOnScreenDebugMessage( 1343001, 5, FColor::Magenta, "ReelingAmount:" + FString::SanitizeFloat( ReelingAmount )  );
 		GEngine->AddOnScreenDebugMessage( 1343002, 5, FColor::Magenta, "PenaltyTimer :" + FString::SanitizeFloat( PenaltyTimer )  );
 		GEngine->AddOnScreenDebugMessage( 1343003, 5, FColor::Magenta, "inputIndex   :" + FString::SanitizeFloat( inputIndex )  );
+		GEngine->AddOnScreenDebugMessage( 1343004, 5, FColor::Magenta, "RodX:" + FString::SanitizeFloat( RodDirection.X )  );
+		GEngine->AddOnScreenDebugMessage( 1343005, 5, FColor::Magenta, "RodY:" + FString::SanitizeFloat( RodDirection.Y )  );
 	}
 
 	ReelingAmount -= DeltaTime * ReelSpeedDecrease;
@@ -41,6 +43,13 @@ void AFishingRod::Tick(float DeltaTime)
 }
 
 void AFishingRod::Interact_Implementation( FVector2D _input )
+{
+	RodDirection += _input * RodMoveSpeed;
+	RodDirection.Normalize();
+	IInteract::Interact_Implementation( _input );
+}
+
+void AFishingRod::ReelIn( FVector2D _input )
 {
 	if( PenaltyTimer > 0 )
 		return;

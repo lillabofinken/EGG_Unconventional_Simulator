@@ -80,4 +80,8 @@ public:
 private:
 	UPROPERTY()
 	AFishingRod* FishingRod = nullptr;
+
+
+
+	AActor* InteractionTrace();
 };

@@ -125,6 +125,16 @@ void ACharacter_EggPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void ACharacter_EggPlayer::Move(const FInputActionValue& Value)
 {
+	if( bInteract )
+	{
+		auto HitActor = InteractionTrace();
+		if( HitActor )
+		{
+			IInteract::Execute_Interact( HitActor, Value.Get<FVector2D>() );
+			return;
+		}
+	}
+	
 	FVector2D Input = Value.Get<FVector2D>();
 	if (HandActor)
 	{
@@ -175,8 +185,56 @@ void ACharacter_EggPlayer::ReelingActionTriggered( const FInputActionValue& Valu
 {
 	if( FishingRod )
 	{
-		IInteract::Execute_Interact( FishingRod, Value.Get<FVector2D>() );
+		FishingRod->ReelIn( Value.Get<FVector2D>() );
 		return;
 	}
 	FishingRod = AFishingRod::GetFishingRod();
+}
+
+AActor* ACharacter_EggPlayer::InteractionTrace()
+{
+	TArray<FHitResult> HitResults;
+	const FVector Start = HandActor->GetActorLocation();
+	const FVector End = Start;
+	
+	const float Radius = 100.0f;
+
+	TArray< AActor* > ignoreArray = TArray<AActor*>();
+	ignoreArray.Add( HandActor );
+	ignoreArray.Add( this );
+
+	
+	bool bHit = UKismetSystemLibrary::SphereTraceMulti(
+		this,
+		Start,
+		End,
+		Radius,
+		UEngineTypes::ConvertToTraceType(ECC_Visibility),
+		false,
+		ignoreArray, // Actors to ignore
+		EDrawDebugTrace::ForDuration,
+		HitResults,
+		true,
+		FLinearColor::Red,
+		FLinearColor::Green,
+		0
+	);
+
+	for ( const FHitResult& Hit : HitResults )
+	{
+		AActor* HitActor = Hit.GetActor();
+		if ( HitActor && HitActor->GetClass()->ImplementsInterface( UInteract::StaticClass() ) )
+		{
+			return HitActor;
+		}
+	}
+
+	//DrawDebugSphere( this->GetWorld(), Start, Radius,
+	//	5,
+	//	bHit ? FColor::Green : FColor::Red,
+	//	false, 0.01f,
+	//	0,
+	//	5 );
+
+	return nullptr;
 }
