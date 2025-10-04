@@ -13,6 +13,7 @@ PlayerMappingContext(nullptr),
 MoveAction(nullptr),
 InteractAction(nullptr),
 ChangeMoveAxisAction(nullptr),
+ReelingAction(nullptr),
 HandActor(nullptr),
 MoveSpeed(1.0f),
 bInteract(false),
@@ -24,6 +25,8 @@ bDepthMode(false)
 void ACharacter_EggPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FishingRod = AFishingRod::GetFishingRod();
 
 	if (APlayerController* PC = Cast<APlayerController>(Controller))
 	{
@@ -111,11 +114,12 @@ void ACharacter_EggPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	
 	if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacter_EggPlayer::Move);
-		EnhancedInput->BindAction(InteractAction, ETriggerEvent::Started, this, &ACharacter_EggPlayer::InteractStarted);
-		EnhancedInput->BindAction(InteractAction, ETriggerEvent::Completed, this, &ACharacter_EggPlayer::InteractCompleted);
-		EnhancedInput->BindAction(ChangeMoveAxisAction, ETriggerEvent::Started, this, &ACharacter_EggPlayer::ChangeMoveAxisStarted);
-		EnhancedInput->BindAction(ChangeMoveAxisAction, ETriggerEvent::Completed, this, &ACharacter_EggPlayer::ChangeMoveAxisCompleted);
+		EnhancedInput->BindAction( MoveAction,           ETriggerEvent::Triggered, this, &ACharacter_EggPlayer::Move                    );
+		EnhancedInput->BindAction( InteractAction,       ETriggerEvent::Started,   this, &ACharacter_EggPlayer::InteractStarted         );
+		EnhancedInput->BindAction( InteractAction,       ETriggerEvent::Completed, this, &ACharacter_EggPlayer::InteractCompleted       );
+		EnhancedInput->BindAction( ChangeMoveAxisAction, ETriggerEvent::Started,   this, &ACharacter_EggPlayer::ChangeMoveAxisStarted   );
+		EnhancedInput->BindAction( ChangeMoveAxisAction, ETriggerEvent::Completed, this, &ACharacter_EggPlayer::ChangeMoveAxisCompleted );
+		EnhancedInput->BindAction( ReelingAction,        ETriggerEvent::Triggered, this, &ACharacter_EggPlayer::ReelingActionTriggered  );
 	}
 }
 
@@ -165,4 +169,14 @@ void ACharacter_EggPlayer::ChangeMoveAxisStarted(const FInputActionValue& Value)
 void ACharacter_EggPlayer::ChangeMoveAxisCompleted(const FInputActionValue& Value)
 {
 	bDepthMode = false;
+}
+
+void ACharacter_EggPlayer::ReelingActionTriggered( const FInputActionValue& Value )
+{
+	if( FishingRod )
+	{
+		IInteract::Execute_Interact( FishingRod, Value.Get<FVector2D>() );
+		return;
+	}
+	FishingRod = AFishingRod::GetFishingRod();
 }

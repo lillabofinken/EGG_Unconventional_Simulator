@@ -8,6 +8,8 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "FishingRod.h"
+
 #include "Character_EggPlayer.generated.h"
 
 UCLASS()
@@ -30,6 +32,7 @@ public:
 	void InteractCompleted(const FInputActionValue& Value);
 	void ChangeMoveAxisStarted(const FInputActionValue& Value);
 	void ChangeMoveAxisCompleted(const FInputActionValue& Value);
+	void ReelingActionTriggered(const FInputActionValue& Value);
  
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputMappingContext* PlayerMappingContext;
@@ -39,6 +42,8 @@ public:
 	class UInputAction* InteractAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* ChangeMoveAxisAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* ReelingAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
 	float CameraPanStrength = 10.3f;
@@ -71,4 +76,8 @@ public:
 	bool bDepthMode;
 	
 	float MoveSpeed;
+
+private:
+	UPROPERTY()
+	AFishingRod* FishingRod = nullptr;
 };
