@@ -45,7 +45,8 @@ void AFishingRod::Tick(float DeltaTime)
 bool AFishingRod::Interact_Implementation( FVector2D _input, FVector _pos )
 {
 	RodDirection += _input * RodMoveSpeed;
-	RodDirection.Normalize();
+	RodDirection.X = FMath::Clamp( RodDirection.X, -1,1 );
+	RodDirection.Y = FMath::Clamp( RodDirection.Y, -1,0 );
 	return true;
 }
 

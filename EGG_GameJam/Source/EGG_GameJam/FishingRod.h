@@ -51,7 +51,7 @@ protected:
 	float ReelingAmount = 0.0;
 	
 	UPROPERTY( BlueprintReadOnly )
-	FVector2D RodDirection = FVector2D( 0, -1 ); 
+	FVector2D RodDirection = FVector2D( 0, 0 ); 
 
 
 	float LineLenght = 0;
