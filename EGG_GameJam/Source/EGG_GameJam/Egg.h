@@ -50,7 +50,9 @@ public:
 	float EatEgg();
 	virtual void Boiling_Implementation( bool _enter ) override;
 	virtual bool Interact_Implementation( FVector2D _input,  FVector _pos ) override;
-	
+
+	UPROPERTY( BlueprintCallable )
+	bool IsPickedUp();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

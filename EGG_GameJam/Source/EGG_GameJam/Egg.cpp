@@ -42,6 +42,11 @@ bool AEgg::Interact_Implementation( FVector2D _input, FVector _pos )
 	return false;
 }
 
+bool AEgg::IsPickedUp()
+{
+	return SimulationCounter > 0;
+}
+
 // Called when the game starts or when spawned
 void AEgg::BeginPlay()
 {
