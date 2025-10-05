@@ -46,8 +46,10 @@ public:
 	float MaxTemperature = 100;
 	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category = "Egg | Base" )
 	float MinTemperature = 30;
-	
+
+	UFUNCTION( BlueprintCallable )
 	float EatEgg();
+
 	virtual void Boiling_Implementation( bool _enter ) override;
 	virtual bool Interact_Implementation( FVector2D _input,  FVector _pos ) override;
 
