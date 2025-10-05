@@ -27,7 +27,7 @@ void AMyEggMosuqito::BeginPlay()
 
 	TArray<AActor*> Eggs;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEgg::StaticClass(), Eggs);
-	if( Eggs.Num() == 0 )
+	if (Eggs.Num() == 0)
 	{
 		Destroy();
 		return;
@@ -46,6 +46,16 @@ void AMyEggMosuqito::Tick(float DeltaTime)
 		Destroy();
 		return;
 	}
+
+	if (bKillTimerActive)
+	{
+		KillTimer -= DeltaTime;
+		if (KillTimer <= 0)
+		{
+			Destroy();
+			return;
+		}
+	}
 	
 	FVector CurrentLocation = GetActorLocation();
 	if (!bHasEgg)
@@ -56,7 +66,8 @@ void AMyEggMosuqito::Tick(float DeltaTime)
 		
 		if (FVector::Dist(NewLocation, TargetLocation) < 10.f) 
 		{
-			AttachToActor(TargetEgg, FAttachmentTransformRules::KeepWorldTransform);
+			TargetEgg->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+			TargetEgg->DisableComponentsSimulatePhysics();
 			bHasEgg = true;
 			
 			LerpAwayDirection = FVector(FMath::FRandRange(-1.f, 1.f),
@@ -67,6 +78,7 @@ void AMyEggMosuqito::Tick(float DeltaTime)
 	{
 		FVector NewLocation = GetActorLocation() + LerpAwayDirection * LerpSpeed * DeltaTime;
 		SetActorLocation(NewLocation);
+		bKillTimerActive = true;
 	}
 }
 

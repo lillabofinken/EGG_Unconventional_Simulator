@@ -6,9 +6,9 @@
 #include "GameFramework/Actor.h"
 
 AMymoswquitoMAnager::AMymoswquitoMAnager(): 
-SpawnTimeMin(4),
-SpawnTimeMax(10),
-SpawnTimer(2)
+SpawnTimeMin(20),
+SpawnTimeMax(40),
+SpawnTimer(30)
 {
 	PrimaryActorTick.bCanEverTick = true;
 }

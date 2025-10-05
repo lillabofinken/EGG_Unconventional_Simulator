@@ -31,6 +31,8 @@ private:
 	FVector LerpAwayDirection;
 
 	UPROPERTY()
-	float LerpSpeed = 300.f; // units per sec
+	float LerpSpeed = 100.f; // units per sec
 
+	float KillTimer = 6.0f;
+	bool bKillTimerActive = false;
 };
