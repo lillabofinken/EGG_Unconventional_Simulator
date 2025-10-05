@@ -40,12 +40,17 @@ public:
 
 		UFUNCTION( BlueprintCallable )
 		void ReelIn( FVector2D _input );
+	
+		UFUNCTION( BlueprintCallable )
+		float getLineLenght(){ return LineLenght; }
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	float PenaltyTimer = 0.0f;
 
+	UPROPERTY( BlueprintReadWrite )
+	float LineLenght = 0;
 
 	UPROPERTY( BlueprintReadOnly )
 	float ReelingAmount = 0.0;
@@ -54,7 +59,6 @@ protected:
 	FVector2D RodDirection = FVector2D( 0, 0 ); 
 
 
-	float LineLenght = 0;
 
 
 public:	
@@ -69,6 +73,7 @@ private:
 
 
 public:
+	UFUNCTION( BlueprintCallable )
 	static AFishingRod* GetFishingRod();
 private:
 	inline static AFishingRod* FishingRod = nullptr;

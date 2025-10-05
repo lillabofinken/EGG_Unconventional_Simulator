@@ -27,6 +27,11 @@ void AMyEggMosuqito::BeginPlay()
 
 	TArray<AActor*> Eggs;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEgg::StaticClass(), Eggs);
+	if( Eggs.Num() == 0 )
+	{
+		Destroy();
+		return;
+	}
 	int ranomEgg = rand() % Eggs.Num();
 
 	TargetEgg = Eggs[ranomEgg];
