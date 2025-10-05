@@ -55,13 +55,16 @@ public:
 
 	UFUNCTION( BlueprintCallable )
 	bool IsPickedUp();
+	UPROPERTY(BlueprintReadWrite)
+	bool IsBoiling = false;
+	UPROPERTY(BlueprintReadWrite)
+	float CurrentCookTime = 0;
+	UPROPERTY(BlueprintReadWrite)
+	float CurrentTemperature = 20;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	float CurrentCookTime = 0;
-	float CurrentTemperature = 20;
-	bool IsBoiling = false;
 
 	int SimulationCounter = -1;
 
