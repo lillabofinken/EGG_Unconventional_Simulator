@@ -26,7 +26,7 @@ float AEgg::EatEgg()
 	CookDistance /= PerfectCookTimeSecondsRange;
 	CookDistance = 1 - CookDistance;
 
-	const float Points = MaxBonusPoints * TemperatureDistance * CookDistance + BasePoints;
+	const float Points = MaxBonusPoints * CookDistance + BasePoints;
 	return Points;
 }
 
