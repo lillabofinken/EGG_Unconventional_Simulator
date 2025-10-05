@@ -3,6 +3,7 @@
 
 #include "Character_EggPlayer.h"
 
+#include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -64,6 +65,8 @@ void ACharacter_EggPlayer::BeginPlay()
 void ACharacter_EggPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	RotateCamera( DeltaTime );
 	
 	if (!HandActor || !CameraBoom)
 		return;
@@ -107,7 +110,7 @@ void ACharacter_EggPlayer::Tick(float DeltaTime)
 			DynamicSmoothness
 		);
 
-		CameraBoom->SetRelativeRotation(NewRot);
+		//CameraBoom->SetRelativeRotation(NewRot);
 	}
 	else
 	{
@@ -117,7 +120,7 @@ void ACharacter_EggPlayer::Tick(float DeltaTime)
 			DeltaTime,
 			LookAtSmoothness
 		);
-		CameraBoom->SetRelativeRotation(ResetRot);
+		//CameraBoom->SetRelativeRotation(ResetRot);
 	}
 
 }
@@ -157,26 +160,20 @@ void ACharacter_EggPlayer::Move(const FInputActionValue& Value)
 
 		if (bDepthMode)
 		{
-			LocalInput.X = Input.Y * MoveSpeed;
-			LocalInput.Y = Input.X * MoveSpeed;
+			CameraOffset.X += Input.Y * MoveSpeed;
+			CameraOffset.Y += Input.X * MoveSpeed;
 		}
 		else
 		{
-			LocalInput.Z = Input.Y * MoveSpeed;
-			LocalInput.Y = Input.X * MoveSpeed;
+			CameraOffset.Z += Input.Y * MoveSpeed;
+			CameraOffset.Y += Input.X * MoveSpeed;
 		}
-
-		FTransform ParentTransform = HandActor->GetAttachParentActor()
-	? HandActor->GetAttachParentActor()->GetActorTransform()
-	: FTransform::Identity;
-
-		FVector WorldOffset = ParentTransform.TransformVector(LocalInput);
-
-		FVector NewWorldLocation = HandActor->GetActorLocation() + WorldOffset;
-		HandActor->SetActorLocation(NewWorldLocation);
-
-		GEngine->AddOnScreenDebugMessage(10, 0.0f, FColor::Green,
-				FString::Printf(TEXT("Local Move: X=%.2f, Y=%.2f, Z=%.2f"), LocalInput.X, LocalInput.Y, LocalInput.Z));
+		CameraOffset = FVector
+		(
+			FMath::Clamp(   CameraOffset.X, 0, MaxCameraOffset.X ),
+			FMath::Clamp( CameraOffset.Y, -MaxCameraOffset.Y, MaxCameraOffset.Y ),
+			FMath::Clamp( CameraOffset.Z, -MaxCameraOffset.Z, MaxCameraOffset.Z )
+		);
 	}
 }
 
@@ -256,4 +253,71 @@ AActor* ACharacter_EggPlayer::InteractionTrace()
 	//	5 );
 
 	return nullptr;
+}
+
+void ACharacter_EggPlayer::RotateCamera( float _deltaTime )
+{
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC)
+		return;
+
+	FVector2D ScreenLocation;
+	if (!UGameplayStatics::ProjectWorldToScreen(PC, HandActor->GetActorLocation(), ScreenLocation))
+		return;
+	
+	int32 ViewX, ViewY;
+	PC->GetViewportSize(ViewX, ViewY);
+	FVector2D ScreenCenter(ViewX * 0.5f, ViewY * 0.5f);
+	FVector2D FromCenter = (ScreenLocation - ScreenCenter) / FVector2D(ViewX, ViewY);
+	
+	auto cam = FindComponentByClass<UCameraComponent>();
+
+	const float YawDir = FromCenter.X > 0 ? 1 : -1;
+	if( abs( FromCenter.X ) > EdgeThreshold )
+	{
+		LookDirection.X = FMath::Lerp( LookDirection.X, YawDir, YawLerp * _deltaTime );
+	}
+	else
+	{
+		LookDirection.X = FMath::Lerp( LookDirection.X, 0.0f, YawLerp * _deltaTime );		
+	}
+	const float YawValue = LookDirection.X * YawLookSpeed * _deltaTime;
+	CurrentCameraRotation.Yaw += YawValue;
+	CurrentCameraRotation.Yaw = FMath::Clamp( CurrentCameraRotation.Yaw, -MaxCameraYaw, MaxCameraYaw );
+	CameraOffset.Y -= YawValue * CameraLookHandMovement.X;
+
+
+	const float PitchDir = FromCenter.Y > 0 ? 1 : -1;
+	if( abs( FromCenter.Y ) > EdgeThreshold )
+	{
+		LookDirection.Y = FMath::Lerp( LookDirection.Y, PitchDir, PitchLerp * _deltaTime );
+	}
+	else
+	{
+		LookDirection.Y = FMath::Lerp( LookDirection.Y, 0.0f, PitchLerp * _deltaTime );		
+	}
+	const float PitchValue = -LookDirection.Y * PitchLookSpeed * _deltaTime;
+	CurrentCameraRotation.Pitch += PitchValue;
+	CurrentCameraRotation.Pitch = FMath::Clamp( CurrentCameraRotation.Pitch, -MaxCameraPitch, MaxCameraPitch );
+	CameraOffset.Z -= PitchValue * CameraLookHandMovement.Y;
+
+	
+
+	cam->SetRelativeRotation( CurrentCameraRotation );
+	CameraOffset = FVector
+		(
+			FMath::Clamp(   CameraOffset.X, 60, MaxCameraOffset.X ),
+			FMath::Clamp( CameraOffset.Y, -MaxCameraOffset.Y, MaxCameraOffset.Y ),
+			FMath::Clamp( CameraOffset.Z, -MaxCameraOffset.Z, MaxCameraOffset.Z )
+		);
+		
+	FVector newPos =
+		cam->GetForwardVector() * CameraOffset.X +
+			
+		cam->GetRightVector() * CameraOffset.Y +
+			
+		cam->GetUpVector() * CameraOffset.Z;
+		
+	HandActor->SetActorRotation( cam->GetComponentRotation() );
+	HandActor->SetActorLocation( newPos + cam->GetComponentLocation() );
 }

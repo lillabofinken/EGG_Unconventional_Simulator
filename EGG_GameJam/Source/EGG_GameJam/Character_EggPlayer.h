@@ -59,7 +59,22 @@ public:
 	float MaxCameraYaw = 15.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
 	float MaxCameraPitch = 8.0f;
-
+	
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Camera" )
+	float YawLerp = 0.05f;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Camera" )
+	float PitchLerp = 0.05f;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Camera" )
+	float YawLookSpeed = 2.0f;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Camera" )
+	float PitchLookSpeed = 2.0f;
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Camera" )
+	FVector2D CameraLookDeadZone = FVector2D( 0.8f, 0.8f );
+	UPROPERTY( EditAnywhere, BlueprintReadWrite, Category="Camera" )
+	FVector2D CameraLookHandMovement = FVector2D( 0.5f, 0.5f );
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HAND")
+	FVector MaxCameraOffset = FVector( 120, 60, 30 ); 
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> HandBP;
@@ -81,7 +96,11 @@ private:
 	UPROPERTY()
 	AFishingRod* FishingRod = nullptr;
 
-
-
+	FVector CameraOffset = FVector( 60, 0, 0 );
+	FRotator CurrentCameraRotation = FRotator( 0, 0, 0 );
+	FVector2D LookDirection = FVector2D( 0,0 );
+	
 	AActor* InteractionTrace();
+
+	void RotateCamera( float _deltaTime ); 
 };
