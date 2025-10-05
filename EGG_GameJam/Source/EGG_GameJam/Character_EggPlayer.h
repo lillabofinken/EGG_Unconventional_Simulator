@@ -100,6 +100,11 @@ public:
 
 private:
 	UPROPERTY()
+	AActor* GrabedActor = nullptr;
+	bool bHandLocked = false;
+	FVector2D savedInput;
+	
+	UPROPERTY()
 	AFishingRod* FishingRod = nullptr;
 	FRotator CurrentCameraRotation = FRotator( 0, 0, 0 );
 	FVector2D LookDirection = FVector2D( 0,0 );

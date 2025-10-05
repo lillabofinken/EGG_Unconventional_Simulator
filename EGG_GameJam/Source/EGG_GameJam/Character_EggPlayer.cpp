@@ -75,6 +75,13 @@ void ACharacter_EggPlayer::Tick(float DeltaTime)
 	if (!HandActor || !CameraBoom)
 		return;
 
+	if( bInteract )
+	{
+		GrabedActor = InteractionTrace();
+		if( GrabedActor )
+			bHandLocked = IInteract::Execute_Interact( GrabedActor, savedInput, HandActor->GetActorLocation() - HandActor->GetActorUpVector() * 10 );
+	}
+
 	APlayerController* PC = Cast<APlayerController>(GetController());
 	if (!PC)
 		return;
@@ -147,15 +154,9 @@ void ACharacter_EggPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void ACharacter_EggPlayer::Move(const FInputActionValue& Value)
 {
-	if( bInteract )
-	{
-		auto HitActor = InteractionTrace();
-		if( HitActor )
-		{
-			if( IInteract::Execute_Interact( HitActor, Value.Get<FVector2D>(), HandActor->GetActorLocation() - HandActor->GetActorUpVector() * 10 ) )
-				return;
-		}
-	}
+	savedInput = Value.Get<FVector2D>();
+	if( bHandLocked )
+		return;
 	
 	FVector2D Input = Value.Get<FVector2D>();
 	if (HandActor)
@@ -178,11 +179,15 @@ void ACharacter_EggPlayer::Move(const FInputActionValue& Value)
 void ACharacter_EggPlayer::InteractStarted(const FInputActionValue& Value)
 {
 	bInteract = true;
+	GrabedActor = nullptr;
+	bHandLocked = false;
 }
 
 void ACharacter_EggPlayer::InteractCompleted(const FInputActionValue& Value)
 {
 	bInteract = false;
+	GrabedActor = nullptr;
+	bHandLocked = false;
 }
 
 void ACharacter_EggPlayer::ChangeMoveAxisStarted(const FInputActionValue& Value)
