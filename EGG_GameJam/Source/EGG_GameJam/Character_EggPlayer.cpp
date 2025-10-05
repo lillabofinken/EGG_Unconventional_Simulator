@@ -168,12 +168,6 @@ void ACharacter_EggPlayer::Move(const FInputActionValue& Value)
 			CameraOffset.Z += Input.Y * MoveSpeed;
 			CameraOffset.Y += Input.X * MoveSpeed;
 		}
-		CameraOffset = FVector
-		(
-			FMath::Clamp(   CameraOffset.X, 0, MaxCameraOffset.X ),
-			FMath::Clamp( CameraOffset.Y, -MaxCameraOffset.Y, MaxCameraOffset.Y ),
-			FMath::Clamp( CameraOffset.Z, -MaxCameraOffset.Z, MaxCameraOffset.Z )
-		);
 	}
 }
 
@@ -304,12 +298,11 @@ void ACharacter_EggPlayer::RotateCamera( float _deltaTime )
 	
 
 	cam->SetRelativeRotation( CurrentCameraRotation );
-	CameraOffset = FVector
-		(
-			FMath::Clamp(   CameraOffset.X, 60, MaxCameraOffset.X ),
-			FMath::Clamp( CameraOffset.Y, -MaxCameraOffset.Y, MaxCameraOffset.Y ),
-			FMath::Clamp( CameraOffset.Z, -MaxCameraOffset.Z, MaxCameraOffset.Z )
-		);
+	CameraOffset.X = FMath::Clamp(   CameraOffset.X, 60, MaxCameraOffset.X );
+	const float depthValue = ( CameraOffset.X / MaxCameraOffset.X ) / ( 60.0f / MaxCameraOffset.X ) ;
+	
+	CameraOffset.Y = FMath::Clamp( CameraOffset.Y, -MaxCameraOffset.Y * depthValue, MaxCameraOffset.Y * depthValue );
+	CameraOffset.Z = FMath::Clamp( CameraOffset.Z, -MaxCameraOffset.Z * depthValue, MaxCameraOffset.Z * depthValue );
 		
 	FVector newPos =
 		cam->GetForwardVector() * CameraOffset.X +
