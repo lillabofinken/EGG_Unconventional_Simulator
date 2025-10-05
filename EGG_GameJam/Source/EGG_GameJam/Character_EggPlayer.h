@@ -91,11 +91,14 @@ public:
 	
 	float MoveSpeed;
 
+	UPROPERTY(BlueprintReadOnly)
+	FVector CameraOffset = FVector(60, 0, 0);
+
+	float MinClampDistance = 10;
+
 private:
 	UPROPERTY()
 	AFishingRod* FishingRod = nullptr;
-
-	FVector CameraOffset = FVector( 60, 0, 0 );
 	FRotator CurrentCameraRotation = FRotator( 0, 0, 0 );
 	FVector2D LookDirection = FVector2D( 0,0 );
 	

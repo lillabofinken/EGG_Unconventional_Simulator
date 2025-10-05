@@ -300,7 +300,7 @@ void ACharacter_EggPlayer::RotateCamera( float _deltaTime )
 	
 
 	cam->SetRelativeRotation( CurrentCameraRotation );
-	CameraOffset.X = FMath::Clamp(   CameraOffset.X, 60, MaxCameraOffset.X );
+	CameraOffset.X = FMath::Clamp(   CameraOffset.X, MinClampDistance, MaxCameraOffset.X );
 	const float depthValue = ( CameraOffset.X / MaxCameraOffset.X ) / ( 60.0f / MaxCameraOffset.X ) ;
 	
 	CameraOffset.Y = FMath::Clamp( CameraOffset.Y, -MaxCameraOffset.Y * depthValue, MaxCameraOffset.Y * depthValue );
