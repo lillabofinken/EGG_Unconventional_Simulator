@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "FishingRod.h"
 
