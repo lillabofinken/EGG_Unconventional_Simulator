@@ -74,6 +74,8 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HAND")
 	FVector MaxCameraOffset = FVector( 120, 60, 30 ); 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HAND")
+	float HandPickupRadius = 50.0f;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> HandBP;

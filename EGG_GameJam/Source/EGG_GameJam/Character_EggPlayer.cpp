@@ -210,8 +210,6 @@ AActor* ACharacter_EggPlayer::InteractionTrace()
 	TArray<FHitResult> HitResults;
 	const FVector Start = HandActor->GetActorLocation();
 	const FVector End = Start;
-	
-	const float Radius = 100.0f;
 
 	TArray< AActor* > ignoreArray = TArray<AActor*>();
 	ignoreArray.Add( HandActor );
@@ -222,7 +220,7 @@ AActor* ACharacter_EggPlayer::InteractionTrace()
 		this,
 		Start,
 		End,
-		Radius,
+		HandPickupRadius,
 		UEngineTypes::ConvertToTraceType(ECC_Visibility),
 		false,
 		ignoreArray, // Actors to ignore
