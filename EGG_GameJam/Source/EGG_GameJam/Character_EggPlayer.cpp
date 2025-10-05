@@ -7,6 +7,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
+#include "Egg.h"
+
+#include "Algo/Sort.h"
+
 class UEnhancedInputLocalPlayerSubsystem;
 
 ACharacter_EggPlayer::ACharacter_EggPlayer():
@@ -230,6 +234,12 @@ AActor* ACharacter_EggPlayer::InteractionTrace()
 		0
 	);
 
+	Algo::Sort(HitResults, [](const FHitResult& A, const FHitResult& B)
+	{
+		return IsValid( Cast< AEgg >( A.GetActor() ) );
+		return A.Distance < B.Distance;
+	});
+	
 	for ( const FHitResult& Hit : HitResults )
 	{
 		AActor* HitActor = Hit.GetActor();
@@ -238,14 +248,6 @@ AActor* ACharacter_EggPlayer::InteractionTrace()
 			return HitActor;
 		}
 	}
-
-	//DrawDebugSphere( this->GetWorld(), Start, Radius,
-	//	5,
-	//	bHit ? FColor::Green : FColor::Red,
-	//	false, 0.01f,
-	//	0,
-	//	5 );
-
 	return nullptr;
 }
 
